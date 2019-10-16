@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.widget.Button
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_black_jack.*
 
 
 class BlackJackActivity : AppCompatActivity() {
@@ -30,11 +31,11 @@ class BlackJackActivity : AppCompatActivity() {
         showPlayerCards()
     }
 
-    fun showDealerCards(){
+    private fun showDealerCards(){
         var cardlayout = findViewById<LinearLayout>(R.id.dealerLayout)
         cardlayout.removeAllViewsInLayout()
 
-        var dealerhand = game.dealer.player.hand.cards
+        var dealerhand = game.dealer.hand.cards
 
         for(c in dealerhand){
             var imageview1 = ImageView(this.applicationContext)
@@ -42,12 +43,12 @@ class BlackJackActivity : AppCompatActivity() {
             cardlayout.addView(imageview1)
 
             //set layout
-            imageview1.layoutParams.width = 100
-            imageview1.layoutParams.height = 150
+            imageview1.layoutParams.width = 150
+            //imageview1.layoutParams.height = 250
         }
     }
 
-    fun showPlayerCards(){
+    private fun showPlayerCards(){
         var playerhand = game.players[0].hand.cards
 
         var cardlayout = findViewById<LinearLayout>(R.id.cardlayout)
@@ -60,8 +61,8 @@ class BlackJackActivity : AppCompatActivity() {
             cardlayout.addView(imageview1)
 
             //set layout
-            imageview1.layoutParams.width = 100
-            imageview1.layoutParams.height = 150
+            imageview1.layoutParams.width = 150
+            //imageview1.layoutParams.height = 250
         }
     }
 
@@ -88,22 +89,55 @@ class BlackJackActivity : AppCompatActivity() {
         end = true
 
         showvalue()
-
         showRestart()
     }
 
-    fun hidevalue(){
+    private fun hidevalue(){
         var ptext = findViewById<TextView>(R.id.playervaluetext)
         var dtext = findViewById<TextView>(R.id.dealervaluetext)
+        var ftext = findViewById<TextView>(R.id.finaltext)
         ptext.text = ""
         dtext.text = ""
+        ftext.text = ""
     }
 
-    fun showvalue(){
+    private fun showvalue(){
         var ptext = findViewById<TextView>(R.id.playervaluetext)
+        var pvalue = game.players[0].hand
+
+        if (pvalue.value() <= 21) {
+            if(pvalue.isBlackJack()) {
+                ptext.text = "BlackJack"
+            } else {
+                ptext.text = pvalue.value().toString()
+            }
+        } else {
+            ptext.text = pvalue.value().toString() + " Over"
+        }
+
+
         var dtext = findViewById<TextView>(R.id.dealervaluetext)
-        ptext.text = game.players[0].hand.value().toString()
-        dtext.text = game.dealer.value().toString()
+        var dvalue = game.dealer.hand
+        if (dvalue.value() <= 21) {
+            if(dvalue.isBlackJack()){
+                dtext.text = "BlackJack"
+            } else {
+                dtext.text = dvalue.value().toString()
+            }
+        } else {
+            dtext.text = dvalue.value().toString() + " Over"
+        }
+
+        var ftext = findViewById<TextView>(R.id.finaltext)
+        var result = pvalue.compare(dvalue)
+        when(result){
+            1 -> ftext.text = "Player Win"
+            0 -> ftext.text = "Draw"
+            -1 -> ftext.text = "Player Lose"
+        }
+
+
+
     }
 
     fun restartClick(view: View){

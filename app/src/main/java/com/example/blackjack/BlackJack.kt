@@ -132,6 +132,48 @@ class Hand{
     fun discard(){
         cards.clear()
     }
+
+    //return a int value
+    // 0 for draw
+    // 1 this hand wins
+    // -1 this hand loses
+    fun compare(h:Hand):Int{
+        // Check for blackjack win
+        if(this.isBlackJack()){
+            return if(h.isBlackJack()){
+                0
+            } else {
+                1
+            }
+        }
+
+        // Check over 21 lost
+        if(this.isOver()){
+            return if(h.isOver()){
+                0
+            } else {
+                -1
+            }
+        }
+
+        if(h.isOver()){
+            return 1
+        }
+
+        // Check for draw
+        if(this.value() == h.value()){
+            return 0
+        }
+
+        // Check for higher value
+        return if(this.value() > h.value()){
+            1
+        }else{
+            -1
+        }
+
+        return 0
+    }
 }
 
 class Player constructor(val name: String){
@@ -158,8 +200,9 @@ class Player constructor(val name: String){
 }
 
 class Dealer{
-    val player = Player("Dealer")
+    val name = "Dealer"
     var deck = Deck()
+    var hand = Hand()
 
     init{
         deck.shuffle()
@@ -171,12 +214,16 @@ class Dealer{
         return card
     }
 
+    fun dealCard(p:Player){
+        p.receiveCard(deck.drawCard())
+    }
+
     fun discard(){
-        player.discard()
+        hand.discard()
     }
 
     fun value():Int{
-        return player.hand.value()
+        return hand.value()
     }
 
     //get new deck
@@ -197,12 +244,14 @@ class Game{
     //start a game
     fun start(){
         //dealer receives 2 cards
-        dealer.player.receiveCard(dealer.dealCard())
-        dealer.player.receiveCard(dealer.dealCard())
+        dealer.hand.receiveCard(dealer.dealCard())
+        dealer.hand.receiveCard(dealer.dealCard())
         //each player receives 2 cards
         for(p in players){
-            p.receiveCard(dealer.dealCard())
-            p.receiveCard(dealer.dealCard())
+            dealer.dealCard(p)
+            dealer.dealCard(p)
+            //p.receiveCard(dealer.dealCard())
+            //p.receiveCard(dealer.dealCard())
         }
     }
 
@@ -219,7 +268,7 @@ class Game{
     //end game
     fun end(){
         while(dealer.value() < 16){
-            dealer.player.receiveCard(dealer.dealCard())
+            dealer.hand.receiveCard(dealer.dealCard())
         }
     }
 
