@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BlackJack</string>
+    <string name="app_header">BlackJack</string>
+    <string name="button_start">Start</string>
+    <string name="button_hold">Hold</string>
+    <string name="button_hit">Hit</string>
 </resources>
