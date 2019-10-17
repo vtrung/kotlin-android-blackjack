@@ -18,6 +18,8 @@ class BlackJackActivity : AppCompatActivity() {
 
     var game = Game()
     var end = false
+    var credit = 100
+    var bet = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class BlackJackActivity : AppCompatActivity() {
         game.start()
         showDealerCards()
         showPlayerCards()
+        showCredit()
     }
 
     private fun showDealerCards(){
@@ -90,15 +93,18 @@ class BlackJackActivity : AppCompatActivity() {
 
         showvalue()
         showRestart()
+        showCredit()
     }
 
     private fun hidevalue(){
         var ptext = findViewById<TextView>(R.id.playervaluetext)
         var dtext = findViewById<TextView>(R.id.dealervaluetext)
         var ftext = findViewById<TextView>(R.id.finaltext)
+        var btext = findViewById<TextView>(R.id.bettext)
         ptext.text = ""
         dtext.text = ""
         ftext.text = ""
+        btext.text = ""
     }
 
     private fun showvalue(){
@@ -129,14 +135,24 @@ class BlackJackActivity : AppCompatActivity() {
         }
 
         var ftext = findViewById<TextView>(R.id.finaltext)
+
         var result = pvalue.compare(dvalue)
         when(result){
-            1 -> ftext.text = "Player Win"
-            0 -> ftext.text = "Draw"
-            -1 -> ftext.text = "Player Lose"
+            1 ->{
+                ftext.text = "Player Win"
+                credit += 2*bet
+                bet = 0
+            }
+            0 -> {
+                ftext.text = "Draw"
+                credit += bet
+                bet = 0
+            }
+            -1 -> {
+                ftext.text = "Player Lose"
+                bet = 0
+            }
         }
-
-
 
     }
 
@@ -150,6 +166,7 @@ class BlackJackActivity : AppCompatActivity() {
 
         showDealerCards()
         showPlayerCards()
+        showCredit()
     }
 
     fun showRestart(){
@@ -158,4 +175,22 @@ class BlackJackActivity : AppCompatActivity() {
 
     }
 
+    fun enterBet(view: View){
+
+        if(bet < 1){
+            credit -= 10
+            bet += 10
+        }
+        showCredit()
+    }
+
+    fun showCredit(){
+        var btext = findViewById<TextView>(R.id.bettext)
+        var ctext = findViewById<TextView>(R.id.credittext)
+
+
+        btext.text = "Bet: ${bet.toString()}"
+        ctext.text = "Credit: ${credit.toString()}"
+
+    }
 }
