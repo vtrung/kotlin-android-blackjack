@@ -1,4 +1,4 @@
-package com.example.blackjack
+package com.vingapp.blackjack
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +12,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_black_jack.*
+import java.io.File
 
 
 class BlackJackActivity : AppCompatActivity() {
@@ -29,9 +30,11 @@ class BlackJackActivity : AppCompatActivity() {
         var p = Player("Ving")
         game.addPlayer(p)
         game.start()
+        readData()
         showDealerCards()
         showPlayerCards()
         showCredit()
+
     }
 
     private fun showDealerCards(){
@@ -94,6 +97,7 @@ class BlackJackActivity : AppCompatActivity() {
         showvalue()
         showRestart()
         showCredit()
+        saveData()
     }
 
     private fun hidevalue(){
@@ -192,5 +196,20 @@ class BlackJackActivity : AppCompatActivity() {
         btext.text = "Bet: ${bet.toString()}"
         ctext.text = "Credit: ${credit.toString()}"
 
+    }
+
+    fun saveData(){
+        val file = File(this.applicationContext.filesDir, "savedata")
+
+        file.writeText(credit.toString())
+
+    }
+
+    fun readData(){
+        val file = File(this.applicationContext.filesDir, "savedata")
+        if(file.exists()) {
+            val content = file.readText()
+            credit = content.toInt()
+        }
     }
 }

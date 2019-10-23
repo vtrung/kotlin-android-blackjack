@@ -1,4 +1,4 @@
-package com.example.blackjack
+package com.vingapp.blackjack
 
 import kotlin.random.Random
 

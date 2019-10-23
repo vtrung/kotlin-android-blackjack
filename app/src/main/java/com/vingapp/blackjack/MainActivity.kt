@@ -1,4 +1,4 @@
-package com.example.blackjack
+package com.vingapp.blackjack
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
